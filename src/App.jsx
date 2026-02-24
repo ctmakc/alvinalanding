@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import heroPortrait900Avif from "../assets/optimized/hero-900.avif";
+import heroPortrait480Avif from "../assets/optimized/hero-480.avif";
 import heroPortrait900 from "../assets/optimized/hero-900.webp";
 import heroPortrait480 from "../assets/optimized/hero-480.webp";
 import buyersLifestyle from "../assets/optimized/buyers-lifestyle-900.webp";
@@ -7,6 +9,7 @@ import buyerGuide from "../assets/optimized/buyer-guide-640.webp";
 import sellerGuide from "../assets/optimized/seller-guide-640.webp";
 import { applySeo } from "./seo";
 import { content, DEFAULT_LOCALE, resolveInitialLocale, SUPPORTED_LOCALES } from "./content";
+import { initAnalytics, trackEvent, trackPageView } from "./analytics";
 
 function useRevealAnimations() {
   useEffect(() => {
@@ -138,17 +141,29 @@ async function submitLeadForm(form, locale) {
 function LeadForm({ t, locale }) {
   const [status, setStatus] = useState("idle");
   const liveMode = Boolean(import.meta.env.VITE_FORM_ENDPOINT);
+  const redirectOnSuccess = String(import.meta.env.VITE_ENABLE_FORM_REDIRECT || "false") === "true";
+  const thankYouUrl = import.meta.env.VITE_THANK_YOU_URL || "/thank-you.html";
 
   function onSubmit(event) {
     event.preventDefault();
     setStatus("submitting");
+    trackEvent("form_submit", { form_name: "lead_form", locale });
     submitLeadForm(event.currentTarget, locale)
       .then((res) => {
         if (!res.ok) throw new Error("submit");
         setStatus("success");
+        trackEvent("generate_lead", { form_name: "lead_form", locale, mode: liveMode ? "live" : "demo" });
         event.currentTarget.reset();
+        if (redirectOnSuccess) {
+          const url = new URL(thankYouUrl, window.location.origin);
+          url.searchParams.set("lang", locale);
+          window.location.assign(url.toString());
+        }
       })
-      .catch(() => setStatus("error"));
+      .catch(() => {
+        setStatus("error");
+        trackEvent("form_error", { form_name: "lead_form", locale });
+      });
   }
 
   return (
@@ -197,11 +212,16 @@ function App() {
   useRevealAnimations();
 
   useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
     const url = new URL(window.location.href);
     url.searchParams.set("lang", locale);
     window.history.replaceState({}, "", url);
     window.localStorage.setItem("locale", locale);
     applySeo({ locale, seo: t.seo, imageUrl: new URL(heroPortrait900, window.location.origin).toString() });
+    trackPageView({ locale, page: "landing" });
   }, [locale, t]);
 
   return (
@@ -245,6 +265,7 @@ function App() {
           <div className="hero-visual reveal">
             <TiltCard className="portrait-card">
               <picture>
+                <source srcSet={`${heroPortrait480Avif} 480w, ${heroPortrait900Avif} 900w`} sizes="(max-width: 860px) 92vw, 540px" type="image/avif" />
                 <source srcSet={`${heroPortrait480} 480w, ${heroPortrait900} 900w`} sizes="(max-width: 860px) 92vw, 540px" type="image/webp" />
                 <img src={heroPortrait900} srcSet={`${heroPortrait480} 480w, ${heroPortrait900} 900w`} sizes="(max-width: 860px) 92vw, 540px" alt="Alvina Usher portrait" width="900" height="900" fetchPriority="high" loading="eager" decoding="async" />
               </picture>

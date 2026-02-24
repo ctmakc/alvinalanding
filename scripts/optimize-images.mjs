@@ -16,8 +16,14 @@ const jobs = [
 
 for (const job of jobs) {
   const outPath = path.join(outDir, job.output);
-  await sharp(job.input).resize(job.resize).webp(job.webp).toFile(outPath);
+  const pipeline = sharp(job.input).resize(job.resize);
+  await pipeline.clone().webp(job.webp).toFile(outPath);
   const meta = await sharp(outPath).metadata();
   const bytes = fs.statSync(outPath).size;
   console.log(`${job.output}: ${meta.width}x${meta.height} ${Math.round(bytes / 1024)}KB`);
+
+  const avifOut = outPath.replace(/\.webp$/, ".avif");
+  await pipeline.clone().avif({ quality: Math.max(45, (job.webp.quality || 80) - 20) }).toFile(avifOut);
+  const avifBytes = fs.statSync(avifOut).size;
+  console.log(`${path.basename(avifOut)}: ${Math.round(avifBytes / 1024)}KB`);
 }

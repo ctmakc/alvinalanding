@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "images:optimize": "node scripts/optimize-images.mjs"
+    "images:optimize": "node scripts/optimize-images.mjs",
+    "seo:generate": "node scripts/generate-static-seo.mjs",
+    "prebuild": "npm run seo:generate"
   },
   "dependencies": {
     "react": "^19.0.0",

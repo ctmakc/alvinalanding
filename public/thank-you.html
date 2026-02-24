@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,follow" />
+  <title>Thank You | Alvina Usher</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: Manrope, system-ui, sans-serif; background:#081018; color:#edf4ff; }
+    .wrap { min-height:100svh; display:grid; place-items:center; padding:24px; background: radial-gradient(circle at 20% 10%, #113154 0%, transparent 45%), radial-gradient(circle at 80% 20%, #4e2d10 0%, transparent 35%), linear-gradient(180deg,#081018,#04070c); }
+    .card { width:min(720px,100%); border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:24px; background:rgba(255,255,255,.04); box-shadow:0 20px 60px rgba(0,0,0,.35); }
+    h1 { margin:0 0 10px; font-family: Syne, system-ui, sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: .95; }
+    p { margin:0 0 12px; color:#adc0d8; line-height:1.6; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; padding:12px 14px; border-radius:12px; text-decoration:none; font-weight:800; border:1px solid rgba(255,255,255,.15); }
+    .btn-primary { background:linear-gradient(135deg,#61c3ff,#8dd7ff); color:#07121b; }
+    .btn-ghost { background:rgba(255,255,255,.04); color:#edf4ff; }
+    small { color:#91a8c3; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1 id="title">Thanks. Your request was sent.</h1>
+      <p id="body">Alvina's team can reach out by phone/email based on your message. If your request is urgent, call or text <strong>613-796-1449</strong>.</p>
+      <div class="actions">
+        <a class="btn btn-primary" id="backLink" href="/?lang=en">Back to Home</a>
+        <a class="btn btn-ghost" href="tel:+16137961449">Call / Text 613-796-1449</a>
+      </div>
+      <p><small id="langHint">Language: English</small></p>
+    </div>
+  </div>
+  <script>
+    const copy = {
+      en: {
+        title: 'Thanks. Your request was sent.',
+        body: "Alvina's team can reach out by phone/email based on your message. If your request is urgent, call or text 613-796-1449.",
+        back: 'Back to Home',
+        lang: 'Language: English'
+      },
+      fr: {
+        title: 'Merci. Votre demande a été envoyée.',
+        body: "L'équipe d'Alvina peut vous contacter par téléphone/courriel selon votre message. Si c'est urgent, appelez ou textez le 613-796-1449.",
+        back: 'Retour à l’accueil',
+        lang: 'Langue : Français'
+      },
+      ru: {
+        title: '???????. ???? ?????? ??????????.',
+        body: '??????? Alvina ???????? ? ???? ?? ????????/email ?? ?????? ???????. ???? ??????, ????????? ??? ???????? ?? 613-796-1449.',
+        back: '????????? ?? ????',
+        lang: '????: ???????'
+      }
+    };
+    const url = new URL(location.href);
+    const lang = ['en','fr','ru'].includes(url.searchParams.get('lang')) ? url.searchParams.get('lang') : 'en';
+    document.documentElement.lang = lang;
+    document.getElementById('title').textContent = copy[lang].title;
+    document.getElementById('body').textContent = copy[lang].body;
+    document.getElementById('backLink').textContent = copy[lang].back;
+    document.getElementById('backLink').href = '/?lang=' + lang;
+    document.getElementById('langHint').textContent = copy[lang].lang;
+  </script>
+</body>
+</html>
