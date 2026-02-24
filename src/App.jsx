@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import heroPortrait900Avif from "../assets/optimized/hero-900.avif";
-import heroPortrait480Avif from "../assets/optimized/hero-480.avif";
-import heroPortrait900 from "../assets/optimized/hero-900.webp";
-import heroPortrait480 from "../assets/optimized/hero-480.webp";
+import heroPortrait900Avif from "../assets/optimized/alvina-hero-900.avif";
+import heroPortrait480Avif from "../assets/optimized/alvina-hero-480.avif";
+import heroPortrait900 from "../assets/optimized/alvina-hero-900.webp";
+import heroPortrait480 from "../assets/optimized/alvina-hero-480.webp";
 import buyersLifestyle from "../assets/optimized/buyers-lifestyle-900.webp";
 import sellersLifestyle from "../assets/optimized/sellers-lifestyle-900.webp";
 import buyerGuide from "../assets/optimized/buyer-guide-640.webp";
@@ -289,7 +289,7 @@ function App() {
             <ul className="feature-list">{t.buyers.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
             <a className="text-link" href="#guides">{t.buyers.link}</a>
           </div>
-          <TiltCard className="media-card reveal"><img src={buyersLifestyle} alt="Happy home buyers with sold sign" width="900" height="900" loading="lazy" decoding="async" /></TiltCard>
+          <TiltCard className="media-card reveal"><img src={buyersLifestyle} alt="Sold home sign and property exterior" width="900" height="900" loading="lazy" decoding="async" /></TiltCard>
         </section>
 
         <section id="sellers" className="split section perf-section">
@@ -301,7 +301,7 @@ function App() {
             <a className="text-link" href="#guides">{t.sellers.link}</a>
           </div>
           <div className="media-stack reveal">
-            <TiltCard className="media-card"><img src={sellersLifestyle} alt="Homeowner receiving keys" width="900" height="900" loading="lazy" decoding="async" /></TiltCard>
+            <TiltCard className="media-card"><img src={sellersLifestyle} alt="Happy home buyers with keys and sold sign" width="900" height="900" loading="lazy" decoding="async" /></TiltCard>
             <div className="mini-portrait"><img src={heroPortrait480} alt="Alvina Usher professional portrait" width="480" height="480" loading="lazy" decoding="async" /></div>
           </div>
         </section>
