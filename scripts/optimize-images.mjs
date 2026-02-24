@@ -1,0 +1,23 @@
+import fs from "node:fs";
+import path from "node:path";
+import sharp from "sharp";
+
+const outDir = path.join("assets", "optimized");
+fs.mkdirSync(outDir, { recursive: true });
+
+const jobs = [
+  { input: "assets/gamma-1.png", output: "hero-900.webp", resize: { width: 900, height: 900, fit: "cover" }, webp: { quality: 82 } },
+  { input: "assets/gamma-1.png", output: "hero-480.webp", resize: { width: 480, height: 480, fit: "cover" }, webp: { quality: 80 } },
+  { input: "assets/gamma-3.jpg", output: "buyers-lifestyle-900.webp", resize: { width: 900 }, webp: { quality: 80 } },
+  { input: "assets/gamma-6.jpg", output: "sellers-lifestyle-900.webp", resize: { width: 900 }, webp: { quality: 80 } },
+  { input: "assets/gamma-4.png", output: "buyer-guide-640.webp", resize: { width: 640 }, webp: { quality: 84 } },
+  { input: "assets/gamma-5.png", output: "seller-guide-640.webp", resize: { width: 640 }, webp: { quality: 84 } }
+];
+
+for (const job of jobs) {
+  const outPath = path.join(outDir, job.output);
+  await sharp(job.input).resize(job.resize).webp(job.webp).toFile(outPath);
+  const meta = await sharp(outPath).metadata();
+  const bytes = fs.statSync(outPath).size;
+  console.log(`${job.output}: ${meta.width}x${meta.height} ${Math.round(bytes / 1024)}KB`);
+}
