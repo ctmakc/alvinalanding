@@ -11,12 +11,5 @@ export function resolveInitialLocale() {
   const url = new URL(window.location.href);
   const fromQuery = url.searchParams.get("lang");
   if (SUPPORTED_LOCALES.includes(fromQuery)) return fromQuery;
-
-  const stored = window.localStorage.getItem("locale");
-  if (SUPPORTED_LOCALES.includes(stored)) return stored;
-
-  const nav = (navigator.language || "").toLowerCase();
-  if (nav.startsWith("fr")) return "fr";
-  if (nav.startsWith("ru")) return "ru";
   return DEFAULT_LOCALE;
 }

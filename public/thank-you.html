@@ -26,7 +26,7 @@
   <div class="wrap">
     <div class="card">
       <h1 id="title">Thanks. Your request was sent.</h1>
-      <p id="body">Alvina's team can reach out by phone/email based on your message. If your request is urgent, call or text <strong>613-796-1449</strong>.</p>
+      <p id="body">Alvina's team can reach out by phone or email based on your message. If your request is urgent, call or text <strong>613-796-1449</strong>.</p>
       <div class="actions">
         <a class="btn btn-primary" id="backLink" href="/?lang=en">Back to Home</a>
         <a class="btn btn-ghost" href="tel:+16137961449">Call / Text 613-796-1449</a>
@@ -37,32 +37,33 @@
   <script>
     const copy = {
       en: {
-        title: 'Thanks. Your request was sent.',
-        body: "Alvina's team can reach out by phone/email based on your message. If your request is urgent, call or text 613-796-1449.",
-        back: 'Back to Home',
-        lang: 'Language: English'
+        title: "Thanks. Your request was sent.",
+        body: "Alvina's team can reach out by phone or email based on your message. If your request is urgent, call or text 613-796-1449.",
+        back: "Back to Home",
+        lang: "Language: English"
       },
       fr: {
-        title: 'Merci. Votre demande a �t� envoy�e.',
-        body: "L'�quipe d'Alvina peut vous contacter par t�l�phone/courriel selon votre message. Si c'est urgent, appelez ou textez le 613-796-1449.",
-        back: 'Retour � l�accueil',
-        lang: 'Langue : Fran�ais'
+        title: "Merci. Votre demande a été envoyée.",
+        body: "L'équipe d'Alvina peut vous contacter par téléphone ou courriel selon votre message. Si c'est urgent, appelez ou textez le 613-796-1449.",
+        back: "Retour à l'accueil",
+        lang: "Langue : Français"
       },
       ru: {
-        title: '???????. ???? ?????? ??????????.',
-        body: '??????? Alvina ???????? ? ???? ?? ????????/email ?? ?????? ???????. ???? ??????, ????????? ??? ???????? ?? 613-796-1449.',
-        back: '????????? ?? ????',
-        lang: '????: ???????'
+        title: "Спасибо. Ваша заявка отправлена.",
+        body: "Команда Alvina сможет связаться с вами по телефону или email на основе вашего сообщения. Если вопрос срочный, позвоните или напишите на 613-796-1449.",
+        back: "Вернуться на главную",
+        lang: "Язык: русский"
       }
     };
+
     const url = new URL(location.href);
-    const lang = ['en','fr','ru'].includes(url.searchParams.get('lang')) ? url.searchParams.get('lang') : 'en';
+    const lang = ["en", "fr", "ru"].includes(url.searchParams.get("lang")) ? url.searchParams.get("lang") : "en";
     document.documentElement.lang = lang;
-    document.getElementById('title').textContent = copy[lang].title;
-    document.getElementById('body').textContent = copy[lang].body;
-    document.getElementById('backLink').textContent = copy[lang].back;
-    document.getElementById('backLink').href = '/?lang=' + lang;
-    document.getElementById('langHint').textContent = copy[lang].lang;
+    document.getElementById("title").textContent = copy[lang].title;
+    document.getElementById("body").textContent = copy[lang].body;
+    document.getElementById("backLink").textContent = copy[lang].back;
+    document.getElementById("backLink").href = "/?lang=" + lang;
+    document.getElementById("langHint").textContent = copy[lang].lang;
   </script>
 </body>
 </html>
