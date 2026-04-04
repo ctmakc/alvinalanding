@@ -58,9 +58,7 @@ function Picture({ alt, sources, fallback, width, height, className, priority = 
 
 async function submitLeadForm(form, locale) {
   const provider = (import.meta.env.VITE_FORM_PROVIDER || "formsubmit").toLowerCase();
-  const endpoint =
-    import.meta.env.VITE_FORM_ENDPOINT ||
-    (provider === "formsubmit" ? "https://formsubmit.co/ajax/ctmakc@gmail.com" : "");
+  const endpoint = import.meta.env.VITE_FORM_ENDPOINT || "";
   const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
   const data = new FormData(form);
 
@@ -80,13 +78,6 @@ async function submitLeadForm(form, locale) {
   if (!endpoint) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     return { ok: true, demo: true };
-  }
-
-  if (provider === "formsubmit") {
-    data.append("_subject", `Alvina Landing Lead (${locale.toUpperCase()})`);
-    data.append("_template", "table");
-    data.append("_captcha", "false");
-    data.append("_next", `${window.location.origin}/thank-you.html?lang=${encodeURIComponent(locale)}`);
   }
 
   if (provider === "web3forms" && accessKey) {
@@ -114,14 +105,28 @@ async function submitLeadForm(form, locale) {
 
 function LeadForm({ t, locale }) {
   const [status, setStatus] = useState("idle");
-  const liveMode = Boolean(import.meta.env.VITE_FORM_ENDPOINT || import.meta.env.VITE_FORM_PROVIDER === "formsubmit");
+  const provider = (import.meta.env.VITE_FORM_PROVIDER || "formsubmit").toLowerCase();
+  const liveMode = Boolean(import.meta.env.VITE_FORM_ENDPOINT || provider === "formsubmit");
   const redirectOnSuccess = String(import.meta.env.VITE_ENABLE_FORM_REDIRECT || "true") === "true";
   const thankYouUrl = import.meta.env.VITE_THANK_YOU_URL || "/thank-you.html";
+  const usesNativeSubmit = provider === "formsubmit";
+  const nativeAction = import.meta.env.VITE_FORM_ACTION || "https://formsubmit.co/ctmakc@gmail.com";
+  const nativeNext = new URL(thankYouUrl, typeof window === "undefined" ? "https://alvina.mmix.dev" : window.location.origin);
+  nativeNext.searchParams.set("lang", locale);
 
   function onSubmit(event) {
+    trackEvent("form_submit", { form_name: "lead_form", locale });
+
+    if (usesNativeSubmit) {
+      const honeypot = event.currentTarget.elements.namedItem("website");
+      if (honeypot && String(honeypot.value || "").trim()) {
+        event.preventDefault();
+      }
+      return;
+    }
+
     event.preventDefault();
     setStatus("submitting");
-    trackEvent("form_submit", { form_name: "lead_form", locale });
 
     submitLeadForm(event.currentTarget, locale)
       .then((res) => {
@@ -142,8 +147,22 @@ function LeadForm({ t, locale }) {
   }
 
   return (
-    <form className={`lead-form${status === "success" ? " submitted" : ""}`} onSubmit={onSubmit} noValidate>
+    <form
+      className={`lead-form${status === "success" ? " submitted" : ""}`}
+      onSubmit={onSubmit}
+      noValidate
+      action={usesNativeSubmit ? nativeAction : undefined}
+      method={usesNativeSubmit ? "POST" : undefined}
+    >
       <input className="bot-field" type="text" name="website" tabIndex="-1" autoComplete="off" />
+      {usesNativeSubmit && (
+        <>
+          <input type="hidden" name="_subject" value={`Alvina Landing Lead (${locale.toUpperCase()})`} />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value={nativeNext.toString()} />
+        </>
+      )}
       <div className="form-grid">
         <label>
           {t.form.name}
