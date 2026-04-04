@@ -16,8 +16,9 @@ function readEnv(filePath) {
 }
 
 const localEnv = readEnv(path.resolve('.env'));
+const productionEnv = readEnv(path.resolve('.env.production'));
 const exampleEnv = readEnv(path.resolve('.env.example'));
-const siteUrl = (process.env.VITE_SITE_URL || localEnv.VITE_SITE_URL || exampleEnv.VITE_SITE_URL || 'https://example.com').replace(/\/$/, '');
+const siteUrl = (process.env.VITE_SITE_URL || productionEnv.VITE_SITE_URL || localEnv.VITE_SITE_URL || exampleEnv.VITE_SITE_URL || 'https://example.com').replace(/\/$/, '');
 const publicDir = path.resolve('public');
 fs.mkdirSync(publicDir, { recursive: true });
 
