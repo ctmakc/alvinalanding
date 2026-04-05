@@ -10,7 +10,10 @@
     "test": "vitest run",
     "images:optimize": "node scripts/optimize-images.mjs",
     "seo:generate": "node scripts/generate-static-seo.mjs",
-    "prebuild": "npm run seo:generate"
+    "prebuild": "npm run seo:generate",
+    "cf:pages:ensure": "node scripts/cloudflare-pages-manager.mjs ensure-project",
+    "cf:pages:domains": "node scripts/cloudflare-pages-manager.mjs sync-domains",
+    "namecheap:dns:sync": "node scripts/namecheap-dns-manager.mjs sync-records"
   },
   "dependencies": {
     "react": "^19.0.0",
