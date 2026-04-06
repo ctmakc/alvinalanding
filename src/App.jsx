@@ -1,21 +1,41 @@
 import { useEffect, useState } from "react";
-import alvinaHero900Avif from "../assets/optimized/alvina-hero-900.avif";
-import alvinaHero480Avif from "../assets/optimized/alvina-hero-480.avif";
-import alvinaHero900Webp from "../assets/optimized/alvina-hero-900.webp";
-import alvinaHero480Webp from "../assets/optimized/alvina-hero-480.webp";
-import alvinaPortrait2Avif from "../assets/optimized/alvina-portrait-2-640.avif";
-import alvinaPortrait2Webp from "../assets/optimized/alvina-portrait-2-640.webp";
-import buyersLifestyleAvif from "../assets/optimized/buyers-lifestyle-900.avif";
-import buyersLifestyleWebp from "../assets/optimized/buyers-lifestyle-900.webp";
-import sellersLifestyleAvif from "../assets/optimized/sellers-lifestyle-900.avif";
-import sellersLifestyleWebp from "../assets/optimized/sellers-lifestyle-900.webp";
-import buyerGuideWebp from "../assets/optimized/buyer-guide-640.webp";
-import sellerGuideWebp from "../assets/optimized/seller-guide-640.webp";
-import gammaPortraitOne from "../assets/gamma-3.jpg";
-import gammaPortraitTwo from "../assets/gamma-6.jpg";
-import { applySeo } from "./seo";
-import { content, DEFAULT_LOCALE, resolveInitialLocale, SUPPORTED_LOCALES } from "./content";
+import heroPrimary from "../assets/source-social/IMG_0237.jpeg";
+import heroSecondary from "../assets/source-social/IMG_0241.jpeg";
+import buyerGuide from "../assets/source-social/IMG_7202.png";
+import sellerGuide from "../assets/source-social/IMG_7203.png";
 import { initAnalytics, trackEvent, trackPageView } from "./analytics";
+import { content, DEFAULT_LOCALE, resolveInitialLocale, SUPPORTED_LOCALES } from "./content";
+import { applySeo } from "./seo";
+
+function useRevealAnimations() {
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const nodes = Array.from(document.querySelectorAll(".reveal"));
+
+    if (reduceMotion) {
+      nodes.forEach((node) => node.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.14, rootMargin: "0px 0px -5% 0px" }
+    );
+
+    nodes.forEach((node, index) => {
+      node.style.transitionDelay = `${(index % 6) * 45}ms`;
+      observer.observe(node);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+}
 
 function LocaleSwitcher({ locale, onChange }) {
   return (
@@ -35,30 +55,9 @@ function LocaleSwitcher({ locale, onChange }) {
   );
 }
 
-function Picture({ alt, sources, fallback, width, height, className, priority = false }) {
-  return (
-    <picture className={className}>
-      {sources.map((s) => (
-        <source key={`${s.type}-${s.srcSet}`} srcSet={s.srcSet} sizes={s.sizes} type={s.type} />
-      ))}
-      <img
-        src={fallback.src}
-        srcSet={fallback.srcSet}
-        sizes={fallback.sizes}
-        alt={alt}
-        width={width}
-        height={height}
-        loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : "auto"}
-        decoding="async"
-      />
-    </picture>
-  );
-}
-
 async function submitLeadForm(form, locale) {
-  const provider = (import.meta.env.VITE_FORM_PROVIDER || "formsubmit").toLowerCase();
-  const endpoint = import.meta.env.VITE_FORM_ENDPOINT || "";
+  const endpoint = import.meta.env.VITE_FORM_ENDPOINT;
+  const provider = (import.meta.env.VITE_FORM_PROVIDER || "").toLowerCase();
   const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
   const data = new FormData(form);
 
@@ -70,13 +69,14 @@ async function submitLeadForm(form, locale) {
   data.append("page_url", window.location.href);
   data.append("page_title", document.title);
   data.append("submitted_at", new Date().toISOString());
+
   ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((key) => {
-    const val = new URLSearchParams(window.location.search).get(key);
-    if (val) data.append(key, val);
+    const value = new URLSearchParams(window.location.search).get(key);
+    if (value) data.append(key, value);
   });
 
   if (!endpoint) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 450));
     return { ok: true, demo: true };
   }
 
@@ -87,12 +87,7 @@ async function submitLeadForm(form, locale) {
     data.append("replyto", String(data.get("email") || ""));
   }
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: provider === "formsubmit" ? { Accept: "application/json" } : undefined,
-    body: data
-  });
-
+  const response = await fetch(endpoint, { method: "POST", body: data });
   let payload = null;
   try {
     payload = await response.json();
@@ -103,41 +98,28 @@ async function submitLeadForm(form, locale) {
   return { ok: response.ok && (!payload || payload.success !== false), payload };
 }
 
-function LeadForm({ t, locale }) {
+function LeadForm({ locale, t }) {
   const [status, setStatus] = useState("idle");
-  const provider = (import.meta.env.VITE_FORM_PROVIDER || "formsubmit").toLowerCase();
-  const liveMode = Boolean(import.meta.env.VITE_FORM_ENDPOINT || provider === "formsubmit");
-  const redirectOnSuccess = String(import.meta.env.VITE_ENABLE_FORM_REDIRECT || "true") === "true";
+  const liveMode = Boolean(import.meta.env.VITE_FORM_ENDPOINT);
+  const redirectOnSuccess = String(import.meta.env.VITE_ENABLE_FORM_REDIRECT || "false") === "true";
   const thankYouUrl = import.meta.env.VITE_THANK_YOU_URL || "/thank-you.html";
-  const usesNativeSubmit = provider === "formsubmit";
-  const nativeAction = import.meta.env.VITE_FORM_ACTION || "https://formsubmit.co/ctmakc@gmail.com";
-  const nativeNext = new URL(thankYouUrl, typeof window === "undefined" ? "https://alvina.mmix.dev" : window.location.origin);
-  nativeNext.searchParams.set("lang", locale);
 
-  function onSubmit(event) {
-    trackEvent("form_submit", { form_name: "lead_form", locale });
-
-    if (usesNativeSubmit) {
-      const honeypot = event.currentTarget.elements.namedItem("website");
-      if (honeypot && String(honeypot.value || "").trim()) {
-        event.preventDefault();
-      }
-      return;
-    }
-
+  function handleSubmit(event) {
     event.preventDefault();
     setStatus("submitting");
+    trackEvent("form_submit", { form_name: "lead_form", locale });
 
     submitLeadForm(event.currentTarget, locale)
-      .then((res) => {
-        if (!res.ok) throw new Error("submit");
+      .then((result) => {
+        if (!result.ok) throw new Error("submit_failed");
         setStatus("success");
         trackEvent("generate_lead", { form_name: "lead_form", locale, mode: liveMode ? "live" : "demo" });
         event.currentTarget.reset();
+
         if (redirectOnSuccess) {
-          const url = new URL(thankYouUrl, window.location.origin);
-          url.searchParams.set("lang", locale);
-          window.location.assign(url.toString());
+          const nextUrl = new URL(thankYouUrl, window.location.origin);
+          nextUrl.searchParams.set("lang", locale);
+          window.location.assign(nextUrl.toString());
         }
       })
       .catch(() => {
@@ -147,61 +129,53 @@ function LeadForm({ t, locale }) {
   }
 
   return (
-    <form
-      className={`lead-form${status === "success" ? " submitted" : ""}`}
-      onSubmit={onSubmit}
-      noValidate
-      action={usesNativeSubmit ? nativeAction : undefined}
-      method={usesNativeSubmit ? "POST" : undefined}
-    >
+    <form className={`lead-form${status === "success" ? " submitted" : ""}`} onSubmit={handleSubmit} noValidate>
       <input className="bot-field" type="text" name="website" tabIndex="-1" autoComplete="off" />
-      {usesNativeSubmit && (
-        <>
-          <input type="hidden" name="_subject" value={`Alvina Landing Lead (${locale.toUpperCase()})`} />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_next" value={nativeNext.toString()} />
-        </>
-      )}
+
       <div className="form-grid">
         <label>
-          {t.form.name}
+          <span>{t.form.name}</span>
           <input type="text" name="name" placeholder={t.form.placeholders.name} required autoComplete="name" />
         </label>
         <label>
-          {t.form.email}
+          <span>{t.form.email}</span>
           <input type="email" name="email" placeholder={t.form.placeholders.email} required autoComplete="email" />
         </label>
         <label>
-          {t.form.phone}
+          <span>{t.form.phone}</span>
           <input type="tel" name="phone" placeholder={t.form.placeholders.phone} autoComplete="tel" />
         </label>
         <label>
-          {t.form.interest}
-          <select name="interest" required defaultValue="">
+          <span>{t.form.interest}</span>
+          <select name="interest" defaultValue="" required>
             <option value="" disabled>
               {t.form.select}
             </option>
             {t.form.options.map((option) => (
-              <option key={option}>{option}</option>
+              <option key={option} value={option}>
+                {option}
+              </option>
             ))}
           </select>
         </label>
         <label className="full">
-          {t.form.message}
+          <span>{t.form.message}</span>
           <textarea name="message" rows="4" placeholder={t.form.placeholders.message} />
         </label>
       </div>
+
       <label className="consent-line">
         <input type="checkbox" name="consent" required />
         <span>{t.form.consent}</span>
       </label>
+
       <div className="form-actions-row">
         <button className="btn btn-primary" type="submit" disabled={status === "submitting"}>
           {status === "submitting" ? "..." : t.cta.send}
         </button>
         <p className="form-note">{liveMode ? t.form.noteLive : t.form.noteDemo}</p>
       </div>
+
       {status === "success" && <p className="form-success">{t.form.success}</p>}
       {status === "error" && <p className="form-error">{t.form.error}</p>}
     </form>
@@ -209,67 +183,10 @@ function LeadForm({ t, locale }) {
 }
 
 function App() {
-  const [locale, setLocale] = useState(() =>
-    typeof window === "undefined" ? DEFAULT_LOCALE : resolveInitialLocale()
-  );
+  const [locale, setLocale] = useState(() => (typeof window === "undefined" ? DEFAULT_LOCALE : resolveInitialLocale()));
   const t = content[locale] || content.en;
 
-  const extra = {
-    en: {
-      heroTag: "Ottawa Real Estate by Alvina Usher",
-      heroSub:
-        "A faster, cleaner landing page built to feel credible in the first three seconds and convert consultation-ready leads.",
-      galleryTitle: "Brand visuals & client-facing resources",
-      galleryBody:
-        "Multiple portraits, guide covers, and buyer/seller visuals make the page feel like a real personal brand instead of a generic realtor template.",
-      processTitle: "How clients work with Alvina",
-      process: [
-        "Discovery call and goals mapping",
-        "Buyer or seller plan tailored to Ottawa timing and inventory",
-        "Offer, pricing, and negotiation support",
-        "Calm communication from listing prep to closing"
-      ],
-      whyTitle: "Why this version works better",
-      whyBody:
-        "The page opens faster, keeps English as the default, uses stronger trust cues, and gives buyers and sellers a clearer next step."
-    },
-    fr: {
-      heroTag: "Immobilier Ottawa avec Alvina Usher",
-      heroSub:
-        "Une landing page plus rapide et plus claire, pensée pour inspirer confiance rapidement et convertir des demandes sérieuses.",
-      galleryTitle: "Visuels de marque et ressources clients",
-      galleryBody:
-        "Portraits variés, guides et visuels acheteur/vendeur pour donner une vraie présence de marque personnelle.",
-      processTitle: "Comment les clients travaillent avec Alvina",
-      process: [
-        "Appel de découverte et clarification des objectifs",
-        "Plan acheteur ou vendeur selon le marché d'Ottawa",
-        "Soutien sur le prix, l'offre et la négociation",
-        "Communication fluide jusqu'à la clôture"
-      ],
-      whyTitle: "Pourquoi cette version est meilleure",
-      whyBody:
-        "La page s'ouvre plus vite, garde l'anglais par défaut et donne un parcours plus net vers la consultation."
-    },
-    ru: {
-      heroTag: "Недвижимость в Оттаве с Alvina Usher",
-      heroSub:
-        "Более быстрый и внятный лендинг, который сразу вызывает доверие и ведет к заявке на консультацию.",
-      galleryTitle: "Визуалы бренда и клиентские материалы",
-      galleryBody:
-        "Несколько портретов, обложки гайдов и buyer/seller-визуалы делают страницу похожей на живой личный бренд, а не на шаблон.",
-      processTitle: "Как проходит работа с Alvina",
-      process: [
-        "Знакомство и фиксация целей",
-        "План покупки или продажи под рынок Оттавы",
-        "Поддержка по цене, офферам и переговорам",
-        "Спокойная коммуникация до закрытия сделки"
-      ],
-      whyTitle: "Почему эта версия лучше",
-      whyBody:
-        "Страница открывается быстрее, по умолчанию дает английскую версию и заметно лучше ведет пользователя к консультации."
-    }
-  }[locale];
+  useRevealAnimations();
 
   useEffect(() => {
     initAnalytics();
@@ -279,274 +196,293 @@ function App() {
     const url = new URL(window.location.href);
     url.searchParams.set("lang", locale);
     window.history.replaceState({}, "", url);
-    applySeo({
-      locale,
-      seo: t.seo,
-      imageUrl: new URL(alvinaHero900Webp, window.location.origin).toString()
-    });
+    window.localStorage.setItem("locale", locale);
+    applySeo({ locale, seo: t.seo, imageUrl: new URL(heroPrimary, window.location.origin).toString() });
     trackPageView({ locale, page: "landing" });
   }, [locale, t]);
 
   return (
     <>
-      <div className="bg-decor" aria-hidden="true">
-        <div className="blob blob-a" />
-        <div className="blob blob-b" />
-        <div className="mesh" />
+      <div className="page-glow" aria-hidden="true">
+        <div className="page-glow__orb page-glow__orb--left" />
+        <div className="page-glow__orb page-glow__orb--right" />
+        <div className="page-glow__grid" />
       </div>
 
-      <header className="shell topbar">
+      <header className="shell topbar reveal">
         <a className="brand" href="#home" aria-label="Alvina Usher home">
           <span className="brand-mark">AU</span>
-          <span>
+          <span className="brand-copy">
             <strong>Alvina Usher</strong>
             <small>Ottawa Real Estate</small>
           </span>
         </a>
+
         <nav className="nav" aria-label="Primary">
           <a href="#buyers">{t.nav.buyers}</a>
           <a href="#sellers">{t.nav.sellers}</a>
+          <a href="#market">{t.nav.market}</a>
           <a href="#about">{t.nav.about}</a>
           <a href="#contact">{t.nav.contact}</a>
         </nav>
+
         <div className="topbar-actions">
           <LocaleSwitcher locale={locale} onChange={setLocale} />
-          <a className="btn btn-primary btn-sm" href="tel:+16137961449">
+          <a className="btn btn-ghost btn-sm" href="tel:+16137961449">
             {t.cta.call}
           </a>
         </div>
       </header>
 
-      <main id="home">
-        <section className="shell hero-v2 section-gap">
+      <main className="shell site-main">
+        <section className="hero reveal" id="home">
           <div className="hero-copy">
             <p className="eyebrow">{t.hero.eyebrow}</p>
             <h1>{t.hero.title}</h1>
-            <p className="lead">{t.hero.lede}</p>
-            <p className="hero-tagline">{extra.heroTag}</p>
-            <p className="hero-subline">{extra.heroSub}</p>
+            <p className="hero-lede">{t.hero.lede}</p>
+
             <div className="cta-row">
               <a className="btn btn-primary" href="#contact">
                 {t.cta.consult}
               </a>
-              <a className="btn btn-ghost" href="#guides">
+              <a className="btn btn-outline" href="#guides">
                 {t.cta.guides}
               </a>
             </div>
-            <div className="stats-grid">
+
+            <div className="quick-pills">
+              {t.hero.quickPills.map((pill) => (
+                <span key={pill} className="quick-pill">
+                  {pill}
+                </span>
+              ))}
+            </div>
+
+            <div className="hero-stats">
               {t.hero.stats.map(([value, label]) => (
-                <div key={`${value}-${label}`} className="stat-box">
-                  <span>{value}</span>
-                  <small>{label}</small>
+                <div key={label} className="hero-stat">
+                  <strong>{value}</strong>
+                  <span>{label}</span>
                 </div>
               ))}
             </div>
+
+            <div className="trust-bar">
+              {t.hero.trustPills.map((pill) => (
+                <span key={pill} className="trust-pill">
+                  {pill}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <div className="hero-stage">
-            <div className="hero-portrait-card">
-              <Picture
-                alt="Alvina Usher portrait"
-                width={900}
-                height={900}
-                priority
-                sources={[
-                  {
-                    type: "image/avif",
-                    srcSet: `${alvinaHero480Avif} 480w, ${alvinaHero900Avif} 900w`,
-                    sizes: "(max-width: 900px) 88vw, 520px"
-                  },
-                  {
-                    type: "image/webp",
-                    srcSet: `${alvinaHero480Webp} 480w, ${alvinaHero900Webp} 900w`,
-                    sizes: "(max-width: 900px) 88vw, 520px"
-                  }
-                ]}
-                fallback={{
-                  src: alvinaHero900Webp,
-                  srcSet: `${alvinaHero480Webp} 480w, ${alvinaHero900Webp} 900w`,
-                  sizes: "(max-width: 900px) 88vw, 520px"
-                }}
-              />
+          <div className="hero-visual">
+            <div className="hero-photo-card">
+              <img src={heroPrimary} alt={t.hero.photoAlt} width="1024" height="1024" fetchPriority="high" />
             </div>
-            <div className="hero-float hero-float-top">
-              <strong>{t.nav.buyers}</strong>
-              <span>{t.hero.cards.buyers}</span>
+            <div className="hero-float hero-float--market">
+              <span className="hero-float__label">{t.hero.marketBadge}</span>
+              <strong>{t.hero.marketTitle}</strong>
+              <p>{t.hero.marketBody}</p>
             </div>
-            <div className="hero-float hero-float-bottom">
-              <strong>{t.nav.sellers}</strong>
-              <span>{t.hero.cards.sellers}</span>
+            <div className="hero-float hero-float--offer">
+              <span className="hero-float__label">{t.hero.offerBadge}</span>
+              <strong>{t.hero.offerTitle}</strong>
+              <p>{t.hero.offerBody}</p>
             </div>
           </div>
         </section>
 
-        <section className="shell trust-row" aria-label="Trust signals">
-          {t.trust.map((item) => (
-            <div className="pill" key={item}>
-              {item}
+        <section className="signal-strip reveal" aria-label="Brand and content signals">
+          {t.signalStrip.map((item) => (
+            <div key={item.title} className="signal-chip">
+              <span>{item.title}</span>
+              <small>{item.body}</small>
             </div>
           ))}
-          <a className="pill" href="https://www.alvinausher.com/" target="_blank" rel="noreferrer">
-            alvinausher.com
-          </a>
         </section>
 
-        <section className="shell section-grid section-gap" id="about">
-          <div className="card about-panel">
-            <p className="eyebrow">{t.about.eyebrow}</p>
-            <h2>{t.about.title}</h2>
-            <p>{t.about.p1}</p>
-            <p>{t.about.p2}</p>
-            <p className="soft-note">{extra.whyTitle}</p>
-            <p className="soft-copy">{extra.whyBody}</p>
+        <section className="section reveal" id="buyers">
+          <div className="section-head">
+            <p className="eyebrow">{t.audience.eyebrow}</p>
+            <h2>{t.audience.title}</h2>
+            <p>{t.audience.body}</p>
           </div>
 
-          <div className="gallery-stack">
-            <div className="card image-card large">
-              <Picture
-                alt="Alvina Usher portrait in black suit"
-                width={640}
-                height={640}
-                sources={[
-                  { type: "image/avif", srcSet: `${alvinaPortrait2Avif} 640w`, sizes: "(max-width: 900px) 88vw, 420px" },
-                  { type: "image/webp", srcSet: `${alvinaPortrait2Webp} 640w`, sizes: "(max-width: 900px) 88vw, 420px" }
-                ]}
-                fallback={{
-                  src: alvinaPortrait2Webp,
-                  srcSet: `${alvinaPortrait2Webp} 640w`,
-                  sizes: "(max-width: 900px) 88vw, 420px"
-                }}
-              />
-            </div>
-            <div className="mini-grid portrait-grid">
-              <div className="card image-card">
-                <img src={gammaPortraitOne} alt="Alvina Usher portrait in black suit" width="1024" height="1024" loading="lazy" decoding="async" />
-              </div>
-              <div className="card image-card">
-                <img src={gammaPortraitTwo} alt="Alvina Usher portrait in office setting" width="1024" height="1024" loading="lazy" decoding="async" />
-              </div>
-            </div>
+          <div className="audience-grid">
+            {t.audience.cards.map((card) => (
+              <article key={card.id} className="path-card" id={card.id}>
+                <div className="path-card__kicker">{card.kicker}</div>
+                <h3>{card.title}</h3>
+                <p>{card.body}</p>
+                <ul>
+                  {card.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+                <a className="text-link" href={card.href}>
+                  {card.cta}
+                </a>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section className="shell section-grid section-gap" id="buyers">
-          <div className="card split-copy">
-            <p className="eyebrow">{t.buyers.eyebrow}</p>
-            <h2>{t.buyers.title}</h2>
-            <p>{t.buyers.body}</p>
-            <ul className="feature-list">
-              {t.buyers.bullets.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
+        <section className="section reveal" id="market">
+          <div className="section-head">
+            <p className="eyebrow">{t.market.eyebrow}</p>
+            <h2>{t.market.title}</h2>
+            <p>{t.market.body}</p>
+          </div>
+
+          <div className="insight-grid">
+            {t.market.items.map((item) => (
+              <article key={item.title} className="insight-card">
+                <span className="insight-card__meta">{item.meta}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section strategy-section reveal">
+          <div className="strategy-copy">
+            <p className="eyebrow">{t.blueprint.eyebrow}</p>
+            <h2>{t.blueprint.title}</h2>
+            <p>{t.blueprint.body}</p>
+            <ol className="process-list">
+              {t.blueprint.steps.map((step) => (
+                <li key={step.title}>
+                  <strong>{step.title}</strong>
+                  <span>{step.body}</span>
+                </li>
               ))}
-            </ul>
-            <a className="text-link" href="#guides">
-              {t.buyers.link}
-            </a>
+            </ol>
           </div>
-          <div className="card image-card hero-side-image">
-            <Picture
-              alt="Happy buyers with keys and sold sign"
-              width={900}
-              height={900}
-              sources={[
-                { type: "image/avif", srcSet: `${buyersLifestyleAvif} 900w`, sizes: "(max-width: 900px) 88vw, 560px" },
-                { type: "image/webp", srcSet: `${buyersLifestyleWebp} 900w`, sizes: "(max-width: 900px) 88vw, 560px" }
-              ]}
-              fallback={{ src: buyersLifestyleWebp, srcSet: `${buyersLifestyleWebp} 900w`, sizes: "(max-width: 900px) 88vw, 560px" }}
-            />
+
+          <div className="strategy-proof">
+            <div className="proof-photo">
+              <img src={heroSecondary} alt={t.about.photoAlt} width="1024" height="1024" loading="lazy" />
+            </div>
+            <div className="proof-card">
+              <h3>{t.blueprint.proofTitle}</h3>
+              <p>{t.blueprint.proofBody}</p>
+              <ul>
+                {t.blueprint.proofBullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
-        <section className="shell section-grid reverse section-gap" id="sellers">
-          <div className="card image-card hero-side-image">
-            <Picture
-              alt="Sold home sign and property exterior"
-              width={900}
-              height={900}
-              sources={[
-                { type: "image/avif", srcSet: `${sellersLifestyleAvif} 900w`, sizes: "(max-width: 900px) 88vw, 560px" },
-                { type: "image/webp", srcSet: `${sellersLifestyleWebp} 900w`, sizes: "(max-width: 900px) 88vw, 560px" }
-              ]}
-              fallback={{ src: sellersLifestyleWebp, srcSet: `${sellersLifestyleWebp} 900w`, sizes: "(max-width: 900px) 88vw, 560px" }}
-            />
-          </div>
-          <div className="card split-copy">
-            <p className="eyebrow">{t.sellers.eyebrow}</p>
-            <h2>{t.sellers.title}</h2>
-            <p>{t.sellers.body}</p>
-            <ul className="feature-list">
-              {t.sellers.bullets.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
-              ))}
-            </ul>
-            <a className="text-link" href="#guides">
-              {t.sellers.link}
-            </a>
-          </div>
-        </section>
-
-        <section className="shell section-gap" id="guides">
+        <section className="section reveal" id="guides">
           <div className="section-head">
             <p className="eyebrow">{t.guides.eyebrow}</p>
             <h2>{t.guides.title}</h2>
             <p>{t.guides.body}</p>
           </div>
-          <div className="guides-layout">
-            <div className="card process-card">
-              <h3>{extra.processTitle}</h3>
-              <ol className="process-list">
-                {extra.process.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
-              <h3>{extra.galleryTitle}</h3>
-              <p>{extra.galleryBody}</p>
-            </div>
-            <div className="card guide-card">
-              <img src={buyerGuideWebp} alt="Alvina Usher buyer guide cover" width="640" height="971" loading="lazy" decoding="async" />
-              <div className="guide-copy">
+
+          <div className="guides-grid">
+            <article className="guide-card">
+              <img src={buyerGuide} alt={t.guides.buyer.imageAlt} width="396" height="601" loading="lazy" />
+              <div className="guide-card__copy">
                 <h3>{t.guides.buyer.title}</h3>
                 <p>{t.guides.buyer.body}</p>
-                <a className="btn btn-ghost" href="#contact">
-                  {t.cta.requestAccess}
+                <a className="btn btn-outline btn-sm" href="#contact">
+                  {t.guides.buyer.cta}
                 </a>
               </div>
-            </div>
-            <div className="card guide-card">
-              <img src={sellerGuideWebp} alt="Alvina Usher seller guide cover" width="640" height="971" loading="lazy" decoding="async" />
-              <div className="guide-copy">
+            </article>
+
+            <article className="guide-card">
+              <img src={sellerGuide} alt={t.guides.seller.imageAlt} width="396" height="601" loading="lazy" />
+              <div className="guide-card__copy">
                 <h3>{t.guides.seller.title}</h3>
                 <p>{t.guides.seller.body}</p>
-                <a className="btn btn-ghost" href="#contact">
-                  {t.cta.requestAccess}
+                <a className="btn btn-outline btn-sm" href="#contact">
+                  {t.guides.seller.cta}
                 </a>
               </div>
+            </article>
+          </div>
+        </section>
+
+        <section className="section about-section reveal" id="about">
+          <div className="section-head">
+            <p className="eyebrow">{t.about.eyebrow}</p>
+            <h2>{t.about.title}</h2>
+            <p>{t.about.p1}</p>
+          </div>
+
+          <div className="about-grid">
+            <div className="about-card">
+              <p>{t.about.p2}</p>
+              <div className="value-grid">
+                {t.about.values.map((value) => (
+                  <div key={value.title} className="value-card">
+                    <strong>{value.title}</strong>
+                    <span>{value.body}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="about-card about-card--soft">
+              <p className="about-note">{t.about.note}</p>
+              <ul className="feature-list">
+                {t.about.featureList.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
 
-        <section className="shell section-gap" id="contact">
-          <div className="contact-shell card">
-            <div className="contact-copy">
-              <p className="eyebrow">{t.contact.eyebrow}</p>
-              <h2>{t.contact.title}</h2>
-              <p>{t.contact.body}</p>
-              <div className="contact-links">
-                <a href="tel:+16137961449">{t.contact.links.call}</a>
-                <a href="https://detailsrealty.ca/our-agents.html/alvina-usher/" target="_blank" rel="noreferrer">
-                  {t.contact.links.profile}
-                </a>
-                <a href="https://www.alvinausher.com/" target="_blank" rel="noreferrer">
-                  {t.contact.links.site}
-                </a>
-              </div>
-            </div>
-            <LeadForm t={t} locale={locale} />
+        <section className="section reveal">
+          <div className="section-head">
+            <p className="eyebrow">{t.social.eyebrow}</p>
+            <h2>{t.social.title}</h2>
+            <p>{t.social.body}</p>
           </div>
+
+          <div className="social-grid">
+            {t.social.platforms.map((platform) => (
+              <a key={platform.name} className="social-card" href={platform.href} target="_blank" rel="noreferrer">
+                <span className="social-card__name">{platform.name}</span>
+                <strong>{platform.handle}</strong>
+                <p>{platform.description}</p>
+                <span className="social-card__cta">{platform.label}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="section contact-section reveal" id="contact">
+          <div className="contact-copy">
+            <p className="eyebrow">{t.contact.eyebrow}</p>
+            <h2>{t.contact.title}</h2>
+            <p>{t.contact.body}</p>
+
+            <div className="contact-links">
+              <a href="tel:+16137961449">{t.contact.links.call}</a>
+              <a href="sms:+16137961449">{t.contact.links.text}</a>
+              <a href="mailto:alvina@alvinausher.com">{t.contact.links.email}</a>
+              <a href="https://www.alvinausher.com/" target="_blank" rel="noreferrer">
+                {t.contact.links.site}
+              </a>
+              <a href="https://detailsrealty.ca/our-agents.html/alvina-usher/" target="_blank" rel="noreferrer">
+                {t.contact.links.profile}
+              </a>
+            </div>
+          </div>
+
+          <LeadForm locale={locale} t={t} />
         </section>
       </main>
 
-      <footer className="shell footer">
+      <footer className="shell footer reveal">
         <p>{t.footer.p1}</p>
         <p className="small">{t.footer.p2}</p>
       </footer>

@@ -45,9 +45,17 @@ function setSchema({ locale, canonicalUrl, imageUrl }) {
     url: canonicalUrl,
     image: imageUrl,
     telephone: "+1-613-796-1449",
+    email: "alvina@alvinausher.com",
     areaServed: ["Ottawa", "Ontario", "Canada"],
     address: { "@type": "PostalAddress", addressLocality: "Ottawa", addressRegion: "ON", addressCountry: "CA" },
-    sameAs: ["https://www.alvinausher.com/", "https://detailsrealty.ca/our-agents.html/alvina-usher/"],
+    sameAs: [
+      "https://www.alvinausher.com/",
+      "https://detailsrealty.ca/our-agents.html/alvina-usher/",
+      "https://www.instagram.com/alvinaottawarealestateexpert/",
+      "https://www.youtube.com/@ottawarealestateexpert",
+      "https://www.tiktok.com/@alvina.usher",
+      "https://www.linkedin.com/in/alvina-usher-6b180420/"
+    ],
     memberOf: { "@type": "Organization", name: "Details Realty Inc., Brokerage" },
     knowsLanguage: locale === "fr" ? ["English", "French"] : locale === "ru" ? ["English", "Russian"] : ["English"]
   });
@@ -63,7 +71,7 @@ export function applySeo({ locale, seo, imageUrl }) {
 
   ensureMeta("name", "description").setAttribute("content", seo.description);
   ensureMeta("name", "robots").setAttribute("content", "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1");
-  ensureMeta("name", "theme-color").setAttribute("content", "#081018");
+  ensureMeta("name", "theme-color").setAttribute("content", "#0f2740");
 
   ensureMeta("property", "og:type").setAttribute("content", "website");
   ensureMeta("property", "og:locale").setAttribute("content", locale === "fr" ? "fr_CA" : locale === "ru" ? "ru_RU" : "en_CA");
