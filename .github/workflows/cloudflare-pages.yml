@@ -21,6 +21,7 @@ env:
   NAMECHEAP_DOMAIN: ${{ vars.NAMECHEAP_DOMAIN || '' }}
   NAMECHEAP_DNS_TARGET: ${{ vars.NAMECHEAP_DNS_TARGET || '' }}
   NAMECHEAP_DNS_TTL: ${{ vars.NAMECHEAP_DNS_TTL || '300' }}
+  NAMECHEAP_DNS_SYNC_ENABLED: ${{ vars.NAMECHEAP_DNS_SYNC_ENABLED || 'false' }}
 
 jobs:
   deploy:
@@ -76,8 +77,15 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+      - name: Explain skipped Namecheap DNS sync
+        if: github.ref_name == 'main' && env.CLOUDFLARE_PAGES_DOMAINS != '' && env.DNS_PROVIDER == 'namecheap' && env.NAMECHEAP_DNS_SYNC_ENABLED != 'true'
+        run: |
+          echo "Skipping Namecheap DNS sync in GitHub Actions."
+          echo "Reason: Namecheap API requires an allowlisted client IP, which is not stable on GitHub-hosted runners."
+          echo "Run npm run namecheap:dns:sync from the allowlisted local machine or move this step to a self-hosted runner, then set NAMECHEAP_DNS_SYNC_ENABLED=true if you want CI to execute it."
+
       - name: Sync Namecheap DNS
-        if: github.ref_name == 'main' && env.CLOUDFLARE_PAGES_DOMAINS != '' && env.DNS_PROVIDER == 'namecheap'
+        if: github.ref_name == 'main' && env.CLOUDFLARE_PAGES_DOMAINS != '' && env.DNS_PROVIDER == 'namecheap' && env.NAMECHEAP_DNS_SYNC_ENABLED == 'true'
         run: npm run namecheap:dns:sync
         env:
           NAMECHEAP_API_USER: ${{ secrets.NAMECHEAP_API_USER }}

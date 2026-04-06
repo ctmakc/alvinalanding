@@ -51,6 +51,8 @@ Repository variables used by `.github/workflows/cloudflare-pages.yml`:
   Optional override for the Namecheap ALIAS/CNAME target. Default is `<project>.pages.dev`
 - `NAMECHEAP_DNS_TTL`
   Optional TTL in seconds for managed Namecheap records. Default: `300`
+- `NAMECHEAP_DNS_SYNC_ENABLED`
+  Optional, default `false`. Keep it disabled on GitHub-hosted runners because Namecheap API checks an allowlisted client IP.
 - `VITE_SITE_URL`
   Public site URL used for sitemap/robots generation during build
 
@@ -108,6 +110,7 @@ Use `DNS_PROVIDER=namecheap` when the registrar stays on Namecheap BasicDNS/Free
 - subdomains like `alvina` or `www.alvina` are managed as `CNAME -> <project>.pages.dev`
 - existing mail and verification records (`MX`, `TXT`, `CAA`, `SRV`, `NS`) are preserved
 - the workflow does **not** switch nameservers, because that is intentionally out of scope
+- on GitHub-hosted runners, keep `NAMECHEAP_DNS_SYNC_ENABLED=false`; run `npm run namecheap:dns:sync` from the allowlisted local machine instead
 
 ## Reusing For New Landings
 
