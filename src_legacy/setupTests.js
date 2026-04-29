@@ -18,9 +18,7 @@ class MockIntersectionObserver {
   observe(target) {
     if (target?.classList) target.classList.add("is-visible");
   }
-
   unobserve() {}
-
   disconnect() {}
 }
 

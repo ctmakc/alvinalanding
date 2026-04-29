@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alvina Usher - Official Landing Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&family=Manrope:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        :root {
+            --navy: #00003c;
+            --ivory: #fafaeb;
+            --gold: #735c00;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--ivory);
+            color: var(--navy);
+        }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(0,0,60,0.4), rgba(0,0,60,0.8));
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-[#fafaeb]/80 backdrop-blur-md shadow-sm">
+        <div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+            <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-[#00003c] cursor-pointer">menu</span>
+                <div class="font-['Noto_Serif'] uppercase tracking-widest font-black text-2xl text-[#00003c] leading-tight">
+                    ALVINA<br>USHER
+                </div>
+            </div>
+            <button class="bg-[#00003c] text-[#fafaeb] px-6 py-3 font-['Noto_Serif'] font-bold tracking-widest text-sm uppercase transition-transform active:scale-95">
+                ENQUIRE NOW
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-[85vh] flex items-center pt-24 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="../src/assets/factage/alvina-hero-900.webp" alt="Alvina Usher" class="w-full h-full object-cover object-center">
+            <div class="absolute inset-0 hero-gradient"></div>
+        </div>
+        <div class="relative z-10 px-8 py-12 max-w-4xl">
+            <p class="text-[#735c00] font-bold tracking-[0.2em] uppercase text-xs mb-6">Precision in Real Estate</p>
+            <h1 class="font-serif text-4xl md:text-6xl font-black text-[#fafaeb] leading-tight mb-8">
+                Mission-Focused Real Estate. 31 Years of Logistics Precision Applied to Your Home Sale.
+            </h1>
+            <p class="text-[#fafaeb]/90 text-lg md:text-xl font-light leading-relaxed max-w-2xl">
+                Alvina Usher | Ottawa Real Estate Expert. Specialized in Kanata, Stittsville, and Waterfront Properties.
+            </p>
+        </div>
+    </header>
+
+    <!-- Proof Strip -->
+    <section class="bg-[#fafaeb] py-16 px-8">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <div class="space-y-4">
+                <div class="flex justify-center items-baseline gap-2">
+                    <span class="font-serif text-5xl font-black text-[#00003c]">31</span>
+                    <span class="material-symbols-outlined text-[#00003c]">military_tech</span>
+                </div>
+                <h3 class="font-bold uppercase tracking-widest text-xs text-[#735c00]">Years Logistics Officer</h3>
+                <p class="text-sm text-[#00003c]/60 italic">(Foundation of discipline and reliability)</p>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-center items-baseline gap-2">
+                    <span class="font-serif text-5xl font-black text-[#00003c]">11+</span>
+                    <span class="material-symbols-outlined text-[#00003c]">workspace_premium</span>
+                </div>
+                <h3 class="font-bold uppercase tracking-widest text-xs text-[#735c00]">Years Ottawa Realtor</h3>
+                <p class="text-sm text-[#00003c]/60 italic">(Deep market knowledge)</p>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-center items-center gap-3 text-[#00003c]">
+                    <span class="material-symbols-outlined text-4xl">check_circle</span>
+                </div>
+                <h3 class="font-bold uppercase tracking-widest text-sm text-[#00003c]">Professional Staging Included</h3>
+                <p class="text-sm text-[#00003c]/60 italic">(Zero extra cost for sellers)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intent Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-2">
+        <div class="bg-[#f2f2d9] p-16 flex flex-col justify-center items-start space-y-6">
+            <p class="text-[#735c00] font-bold tracking-widest text-xs uppercase">For Sellers</p>
+            <h2 class="font-serif text-3xl font-black text-[#00003c] leading-snug">
+                List with Precision. Get professional staging and a logistics-led marketing plan.
+            </h2>
+            <a href="#" class="inline-block border-b-2 border-[#00003c] pb-1 font-serif font-bold text-[#00003c] tracking-widest uppercase text-sm hover:text-[#735c00] hover:border-[#735c00] transition-colors">
+                View Selling Strategy
+            </a>
+        </div>
+        <div class="bg-[#00003c] p-16 flex flex-col justify-center items-start space-y-6">
+            <p class="text-[#735c00] font-bold tracking-widest text-xs uppercase">For Buyers</p>
+            <h2 class="font-serif text-3xl font-black text-[#fafaeb] leading-snug">
+                Buy with Confidence. Access 'A Guide to Buying a Home in Ottawa' for free.
+            </h2>
+            <a href="#" class="inline-block border-b-2 border-[#fafaeb] pb-1 font-serif font-bold text-[#fafaeb] tracking-widest uppercase text-sm hover:text-[#735c00] hover:border-[#735c00] transition-colors">
+                Browse Listings
+            </a>
+        </div>
+    </section>
+
+    <!-- Staging Section -->
+    <section class="relative min-h-[600px] flex items-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="../src/assets/factage/gamma-3.jpg" alt="Staged Living Room" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-[#fafaeb]/85"></div>
+        </div>
+        <div class="relative z-10 px-8 py-20 max-w-2xl">
+            <h2 class="font-serif text-4xl md:text-5xl font-black text-[#00003c] mb-8 leading-tight">
+                Your Home, Transformed.
+            </h2>
+            <p class="text-lg text-[#00003c]/80 leading-relaxed mb-10">
+                I collaborate with Turnkey Property Staging Solutions to turn every listing into a model home. High-end presentation is standard, not an upgrade.
+            </p>
+            <ul class="space-y-4">
+                <li class="flex items-center gap-3 text-[#00003c] font-bold uppercase tracking-widest text-xs">
+                    <span class="material-symbols-outlined text-[#735c00]">check_circle</span>
+                    Included Staging Services
+                </li>
+                <li class="flex items-center gap-3 text-[#00003c] font-bold uppercase tracking-widest text-xs">
+                    <span class="material-symbols-outlined text-[#735c00]">check_circle</span>
+                    High-End Architectural Presentation
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Featured Listings -->
+    <section class="bg-[#fafaeb] py-24 px-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl font-black text-[#00003c] mb-4">Featured Listings</h2>
+                <p class="text-[#735c00] font-bold tracking-[0.2em] uppercase text-xs">West Ottawa & Waterfront Specialist</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Listing 1 -->
+                <div class="bg-white shadow-sm overflow-hidden group">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&q=80&w=1000" alt="970 Shamir Avenue" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute top-4 right-4 bg-[#00003c] text-[#fafaeb] text-[10px] font-bold px-3 py-1 uppercase tracking-widest">For Sale</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-black text-[#00003c] mb-2">970 Shamir Avenue</h3>
+                        <p class="text-[#735c00] font-bold text-lg mb-6">29,000</p>
+                        <button class="w-full border border-[#00003c]/20 py-4 font-serif font-bold text-xs uppercase tracking-widest hover:bg-[#00003c] hover:text-[#fafaeb] transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                <!-- Listing 2 -->
+                <div class="bg-white shadow-sm overflow-hidden group">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&q=80&w=1000" alt="304 - 6376 Bilberry Drive N" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute top-4 right-4 bg-[#00003c] text-[#fafaeb] text-[10px] font-bold px-3 py-1 uppercase tracking-widest">For Sale</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-black text-[#00003c] mb-2">304 - 6376 Bilberry Drive N</h3>
+                        <p class="text-[#735c00] font-bold text-lg mb-6">98,500</p>
+                        <button class="w-full border border-[#00003c]/20 py-4 font-serif font-bold text-xs uppercase tracking-widest hover:bg-[#00003c] hover:text-[#fafaeb] transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Library Section -->
+    <section class="bg-[#fafaeb] py-24 px-8 border-t border-[#00003c]/5">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="text-[#735c00] font-bold tracking-[0.2em] uppercase text-[10px] mb-4">Free Intelligence</p>
+                <h2 class="font-serif text-4xl font-black text-[#00003c]">The Precision Library</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Guide 1 -->
+                <div class="bg-white p-8 flex items-center gap-8 shadow-sm">
+                    <div class="w-32 h-40 bg-[#00003c] flex items-center justify-center p-4 text-center">
+                        <span class="font-serif text-[#fafaeb] text-[10px] font-black uppercase leading-tight">How To Sell Homes Fast</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-xl font-black text-[#00003c] mb-2">How to Sell Homes Fast for Top Dollar</h3>
+                        <p class="text-sm text-[#00003c]/60 mb-4">Master the logistics of the perfect sale with Alvina's proven strategy.</p>
+                        <button class="text-[#735c00] font-bold text-[10px] uppercase tracking-widest border-b border-[#735c00]">Download Guide</button>
+                    </div>
+                </div>
+                <!-- Guide 2 -->
+                <div class="bg-white p-8 flex items-center gap-8 shadow-sm">
+                    <div class="w-32 h-40 bg-[#735c00] flex items-center justify-center p-4 text-center">
+                        <span class="font-serif text-[#fafaeb] text-[10px] font-black uppercase leading-tight">A Guide To Buying In Ottawa</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-xl font-black text-[#00003c] mb-2">A Guide to Buying a Home in Ottawa</h3>
+                        <p class="text-sm text-[#00003c]/60 mb-4">The expert roadmap to your next investment in the capital region.</p>
+                        <button class="text-[#735c00] font-bold text-[10px] uppercase tracking-widest border-b border-[#735c00]">Download Guide</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Regional Expertise -->
+    <section class="bg-[#fafaeb] py-24 px-8 text-center">
+        <h2 class="font-serif text-4xl font-black text-[#00003c] mb-16">Regional Expertise</h2>
+        <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-[#e9e9d1] py-8 px-4 flex flex-col items-center gap-3">
+                <span class="material-symbols-outlined text-[#735c00]">location_on</span>
+                <span class="font-bold tracking-widest uppercase text-[10px] text-[#00003c]">Kanata</span>
+            </div>
+            <div class="bg-[#e9e9d1] py-8 px-4 flex flex-col items-center gap-3">
+                <span class="material-symbols-outlined text-[#735c00]">location_on</span>
+                <span class="font-bold tracking-widest uppercase text-[10px] text-[#00003c]">Stittsville</span>
+            </div>
+            <div class="bg-[#e9e9d1] py-8 px-4 flex flex-col items-center gap-3">
+                <span class="material-symbols-outlined text-[#735c00]">location_on</span>
+                <span class="font-bold tracking-widest uppercase text-[10px] text-[#00003c]">Constance Bay</span>
+            </div>
+            <div class="bg-[#e9e9d1] py-8 px-4 flex flex-col items-center gap-3">
+                <span class="material-symbols-outlined text-[#735c00]">location_on</span>
+                <span class="font-bold tracking-widest uppercase text-[10px] text-[#00003c]">Orleans</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="bg-[#00003c] py-24 px-8">
+        <div class="max-w-xl mx-auto bg-[#fafaeb] p-12 shadow-2xl">
+            <h2 class="font-serif text-3xl font-black text-[#00003c] mb-2">Secure Your Strategy Session</h2>
+            <p class="text-[#00003c]/60 text-sm mb-8">Direct Phone: <strong>(613) 796-1449</strong></p>
+
+            <form class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#00003c] mb-2">Your Name</label>
+                    <input type="text" placeholder="Full Name" class="w-full bg-transparent border-b border-[#00003c]/20 py-3 focus:outline-none focus:border-[#735c00] transition-colors">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#00003c] mb-2">Phone Number</label>
+                    <input type="tel" placeholder="+1 (613) 000-0000" class="w-full bg-transparent border-b border-[#00003c]/20 py-3 focus:outline-none focus:border-[#735c00] transition-colors">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#00003c] mb-2">Primary Intent</label>
+                    <select class="w-full bg-transparent border-b border-[#00003c]/20 py-3 focus:outline-none focus:border-[#735c00] appearance-none transition-colors">
+                        <option>Selling My Home</option>
+                        <option>Buying A Home</option>
+                        <option>Waterfront Consultation</option>
+                    </select>
+                </div>
+                <button class="w-full bg-[#00003c] text-[#fafaeb] py-5 font-serif font-black tracking-[0.2em] uppercase text-sm mt-8 hover:bg-[#735c00] transition-colors">
+                    Initiate Mission
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#00003c] py-16 px-12 border-t border-white/5">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-12 md:space-y-0">
+            <div class="font-['Noto_Serif'] uppercase tracking-widest font-black text-lg text-[#fafaeb] text-center md:text-left">
+                ALVINA USHER
+            </div>
+            <div class="flex gap-8">
+                <a href="#" class="text-[#fafaeb]/60 text-[10px] font-bold uppercase tracking-widest hover:text-[#735c00]">Listings</a>
+                <a href="#" class="text-[#fafaeb]/60 text-[10px] font-bold uppercase tracking-widest hover:text-[#735c00]">Staging</a>
+                <a href="#" class="text-[#fafaeb]/60 text-[10px] font-bold uppercase tracking-widest hover:text-[#735c00]">Resources</a>
+                <a href="#" class="text-[#fafaeb]/60 text-[10px] font-bold uppercase tracking-widest hover:text-[#735c00]">Contact</a>
+            </div>
+        </div>
+        <div class="mt-16 pt-8 border-t border-white/5 text-center">
+            <p class="text-[#fafaeb]/40 text-[9px] tracking-[0.2em] uppercase mb-2">
+                &copy; 2024 ALVINA USHER PRECISION REAL ESTATE. ALL RIGHTS RESERVED.
+            </p>
+            <p class="text-[#fafaeb]/40 text-[9px] tracking-[0.2em] uppercase">
+                (613) 796-1449. ALL RIGHTS RESERVED.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
