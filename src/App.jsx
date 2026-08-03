@@ -282,6 +282,21 @@ const App = () => {
             Details Realty Inc., Brokerage. Licensed in Ontario.
           </p>
         </div>
+        {/* Agency credit — house standard (uafest.ca): wording + MMIX logo on a
+            light chip, grayscale until hover, so it sits on light and dark footers. */}
+        <div style={{ width: "100%", display: "flex", justifyContent: "center", padding: "22px 24px 0" }}>
+          <a
+            href="https://mmix.ua/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "inline-flex", alignItems: "center", gap: 10, fontSize: 12.5, color: "inherit", opacity: 0.7, textDecoration: "none" }}
+          >
+            Development & promotion —
+            <span style={{ display: "inline-flex", alignItems: "center", background: "rgba(255,255,255,0.9)", borderRadius: 6, padding: "4px 8px" }}>
+              <img src="/mmix-logo.png" alt="MMIX — Marketing Mix" width={62} height={60} style={{ height: 36, width: "auto" }} />
+            </span>
+          </a>
+        </div>
       </footer>
 
     </div>
